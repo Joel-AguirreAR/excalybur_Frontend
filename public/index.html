@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Excalibur</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Cormorant+Garamond&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="barra-navegacion">
+      <div class="logo">
+        <img src="logo-excalybur.png" alt="Excalybur" />
+      </div>
+
+      <div class="marca">
+        <h1>Excalybur</h1>
+      </div>
+
+      <div class="acciones">
+        <button id="ver-arcon">Ver arcón 🧺 <span id="contador-arcon">0</span></button>
+      </div>
+
+      <div id="arcon-lateral" class="arcon-lateral oculto">
+        <button id="cerrar-arcon">✖</button>
+        <h3>Arcón</h3>
+        <div id="contenido-arcon"></div>
+        <p id="total-arcon">💰Total: $0</p>
+        <button id="vaciar-arcon">Vaciar arcon</button>
+      </div>
+
+    </header>
+
+    <!--Banner ceremonial-->
+    <section class="banner fade-in">
+      <div class="subtitulo-global">
+        <p>Viví el estilo · Vestí la Leyenda</p>
+      </div>
+
+      <!--Botones de genero-->
+      <div class="filtro-genero">
+        <button class="genero-btn">Hombre</button>
+        <button class="genero-btn">Mujer</button>
+      </div>
+    </section>
+
+    <!--Catalogo-->
+    <section class="catalogo fade-in">
+      <h2>Catálogo</h2>
+
+      <!-- 🧱 Contenedor de productos -->
+      <div id="productos" class="productos"></div>
+    </section>
+
+    <script src="script.js" defer></script>
+    <script src="animaciones.js"></script>
+    <div id="notificacion" class="notificacion oculto"></div>
+  </body>
+</html>
