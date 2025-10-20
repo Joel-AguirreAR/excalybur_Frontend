@@ -8,15 +8,6 @@ fetch("http://localhost:3000/products")
     const contenedor = document.getElementById("productos");
     contenedor.innerHTML = "";
 
-    // 🎨 Mapa de colores personalizados
-    const mapaColores = {
-      Negro: "#000000",
-      Gris: "#808080",
-      "Gris Oscuro": "#333333",
-      "Rojo Sangre": "#8B0000",
-      Blanco: "#FFFFFF",
-      Beige: "#F5F5DC",
-    };
 
     // 🔁 Recorrer cada producto
     data.forEach((p) => {
@@ -34,7 +25,7 @@ fetch("http://localhost:3000/products")
 
       // 🧱 Estructura HTML del producto
       const productoHTML = `
-        <div class="card">
+        <div class="card" data-id="${p._id}">
           <img src="${p.image}" alt="${p.name}" />
           <h3>${p.name}</h3>
           <p><strong>Estilo:</strong> ${p.style}</p>
@@ -53,7 +44,7 @@ fetch("http://localhost:3000/products")
                   data-color="${color}"
                   title="${color.charAt(0).toUpperCase() + color.slice(1)}"
                   style="background-color: ${
-                    mapaColores[color] || color.toLowerCase()
+                    (typeof mapaColores !== 'undefined' && mapaColores[color]) ? mapaColores[color] : color.toLowerCase()
                   }"
                 ></button>
               `
@@ -95,11 +86,8 @@ fetch("http://localhost:3000/products")
       // 🧱 Insertar producto en el DOM
       contenedor.insertAdjacentHTML("beforeend", productoHTML);
 
-      // 🧙‍♂️ Obtener la última tarjeta insertada
-      const nuevaCard =
-        contenedor.querySelectorAll(".card")[
-          contenedor.querySelectorAll(".card").length - 1
-        ];
+      // 🧙‍♂️ Obtener la última tarjeta insertada (más simple)
+      const nuevaCard = contenedor.lastElementChild;
 
       // 🎭 Activar animación ceremonial de entrada
       nuevaCard.classList.add("visible");
@@ -218,7 +206,8 @@ fetch("http://localhost:3000/products")
   });
 
 // 🧺 Mostrar contenido del arcón como panel editable
-document.getElementById("ver-arcon").addEventListener("click", () => {
+const verArconBtnInit = document.getElementById("ver-arcon");
+if (verArconBtnInit) verArconBtnInit.addEventListener("click", () => {
   const panel = document.getElementById("arcon-lateral");
   const contenido = document.getElementById("contenido-arcon");
   const totalTexto = document.getElementById("total-arcon");
@@ -257,7 +246,8 @@ document.getElementById("ver-arcon").addEventListener("click", () => {
   setTimeout(() => panel.classList.add('visible'), 10);
 
   //Cerrar carrito
-  document.getElementById('cerrar-arcon').addEventListener('click', () => {
+  const cerrarBtn = document.getElementById('cerrar-arcon');
+  if (cerrarBtn) cerrarBtn.addEventListener('click', () => {
     const panel = document.getElementById('arcon-lateral');
     panel.classList.remove('visible');
     setTimeout(() => panel.classList.add('oculto'), 400);
@@ -276,7 +266,8 @@ document.addEventListener("click", (e) => {
 
     localStorage.setItem("arcon", JSON.stringify(arcon));
     actualizarContador();
-    document.getElementById("ver-arcon").click(); // recarga el panel
+    const verBtn = document.getElementById("ver-arcon");
+    if (verBtn) verBtn.click(); // recarga el panel de forma segura
   }
 
   //Eliminar producto
@@ -286,31 +277,39 @@ document.addEventListener("click", (e) => {
 
   itemDiv.classList.add("eliminando");
 
-  setTimeout(() => {
+    setTimeout(() => {
     arcon.splice(index, 1);
     localStorage.setItem("arcon", JSON.stringify(arcon));
     actualizarContador();
-    document.getElementById("ver-arcon").click();
+    const verBtn2 = document.getElementById("ver-arcon");
+    if (verBtn2) verBtn2.click();
   }, 400); // coincide con el tiempo del CSS
 }
 });
 
 const arconLateral = document.getElementById("arcon-lateral");
 
-// 🎯 Abrir arcón
-document.getElementById("ver-arcon").addEventListener("click", () => {
-  arconLateral.classList.add("visible");
-  arconLateral.classList.remove("oculto");
-});
+// 🎯 Abrir / Cerrar arcón (funciones reutilizables)
+function openCart() {
+  if (!arconLateral) return;
+  arconLateral.classList.remove('oculto');
+  setTimeout(() => arconLateral.classList.add('visible'), 10);
+}
 
-// 🎯 Cerrar arcón
-document.getElementById("cerrar-arcon").addEventListener("click", () => {
-  arconLateral.classList.remove("visible");
-  arconLateral.classList.add("oculto");
-});
+function closeCart() {
+  if (!arconLateral) return;
+  arconLateral.classList.remove('visible');
+  setTimeout(() => arconLateral.classList.add('oculto'), 400);
+}
+
+const verArconBtnOpen = document.getElementById("ver-arcon");
+if (verArconBtnOpen) verArconBtnOpen.addEventListener("click", openCart);
+const cerrarArconBtn = document.getElementById("cerrar-arcon");
+if (cerrarArconBtn) cerrarArconBtn.addEventListener("click", closeCart);
 
 // 🧹 Vaciar arcón
-document.getElementById("vaciar-arcon").addEventListener("click", () => {
+const vaciarBtn = document.getElementById("vaciar-arcon");
+if (vaciarBtn) vaciarBtn.addEventListener("click", () => {
   if (arcon.length === 0) {
     alert("🧺 El arcón ya está vacío.");
     return;
@@ -320,7 +319,8 @@ document.getElementById("vaciar-arcon").addEventListener("click", () => {
     arcon = [];
     localStorage.setItem("arcon", JSON.stringify(arcon));
     actualizarContador();
-    document.getElementById("ver-arcon").click();
+    const verBtn3 = document.getElementById("ver-arcon");
+    if (verBtn3) verBtn3.click();
   }
 });
 
@@ -330,10 +330,12 @@ function actualizarContador() {
   const contador = document.getElementById("contador-arcon");
   if (!contador) return; // Evita errores si aún no existe
 
+  if (!botonArcon) return;
+
   // 🔢 Calcular total de unidades en el arcón
   const totalUnidades = arcon.reduce((acc, item) => acc + item.cantidad, 0);
   contador.textContent = totalUnidades;
-s
+
   // ✨ Activar animación ceremonial en el botón
   botonArcon.classList.add("rebote");
   setTimeout(() => botonArcon.classList.remove("rebote"), 400);
@@ -342,6 +344,7 @@ s
 // 🧺 Función de notificación ceremonial
 function mostrarNotificacion(mensaje) {
   const noti = document.getElementById("notificacion");
+  if (!noti) return;
   noti.textContent = mensaje;
   noti.classList.remove("oculto");
   noti.classList.add("visible");
@@ -354,7 +357,34 @@ function mostrarNotificacion(mensaje) {
   }, 2000);
 }
 
+//logica de stock y botones
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof stock === 'undefined') return;
+  for (const producto in stock){
+    for (const variante in stock[producto]){
+      const cantidad = stock[producto][variante];
+      const idBoton = `${producto}-${variante}`;
+      const boton = document.getElementById(idBoton);
+
+      if (boton) {
+        if (cantidad === 0) {
+          boton.disabled = true;
+          boton.classList.add("agotado");
+        } else {
+          const info = document.createElement("span");
+          info.className = "disponible";
+          info.innerText = `Disponible: ${cantidad}`;
+          boton.parentElement.appendChild(info);
+        }
+      }
+    }
+  }
+})
+
 // 🎯 Evento de prueba
-document.getElementById("agregar-producto").addEventListener("click", () => {
+const agregarProdBtn = document.getElementById("agregar-producto");
+if (agregarProdBtn) agregarProdBtn.addEventListener("click", () => {
   mostrarNotificacion("🧺 Producto agregado al arcón");
 });
+
+console.log("stock ceremonial:", typeof stock !== 'undefined' ? stock : 'no definido');
