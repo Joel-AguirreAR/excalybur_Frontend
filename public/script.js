@@ -525,7 +525,6 @@ document.getElementById("ver-arcon")?.addEventListener("click", () => {
   renderCart();
 });
 
-// ❌ Cerrar arcón
 document.getElementById("cerrar-arcon")?.addEventListener("click", () => {
   document.getElementById("arcon-lateral")?.classList.add("oculto");
 });
